@@ -99,9 +99,15 @@ class Universidad:
         self.estudiantes = estudiantes
         
     def anadir_empleado(self, empleado):
+        
+        
         self.empleados.append(empleado)
 
     def anadir_estudiante(self, estudiante):
+        atributos = estudiante.devuelve_datos()
+        if len(atributos) != 6:
+            raise TypeError('Debes proporcionar 6 atributos para Estudiante')
+        
         self.estudiantes.append(estudiante)
 
     def eliminar_empleado(self, empleado):
