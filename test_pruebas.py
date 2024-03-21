@@ -2,6 +2,8 @@ from GestionUniversidad import *
 import pytest
 
 
+#TODO funciones pytest
+
 if __name__ == '__main__':
 
     a1 = Asignatura('a', 123, 6, 36)
