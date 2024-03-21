@@ -64,6 +64,7 @@ class Investigador(Miembro_Departamento):
     def __init__(self,nombre,DNI,direccion,sexo,dep,area):
         Miembro_Departamento.__init__(self,nombre,DNI,direccion,sexo,dep)
         self.area = area
+        #self.asignaturas = None
         
     def muestra_datos(self):
         print(f'Nombre: {self.nombre} DNI: {self.DNI} Direccion: {self.direccion} Sexo: {self.sexo} Departamento: {self.dep}')
@@ -98,27 +99,85 @@ class Universidad:
         self.empleados = empleados
         self.estudiantes = estudiantes
         
-    def anadir_empleado(self, empleado):
+    def anadir_empleado(self, empleado, tipo):
         
+        if not isinstance(empleado.nombre,str):
+            raise TypeError("El nombre debe ser una string")
+        if not isinstance(empleado.DNI,str):
+            raise TypeError("El DNI debe ser una string")
+        if not isinstance(empleado.direccion,str):
+            raise TypeError("La dirección debe ser una string")
+        if not isinstance(empleado.sexo,str):
+            raise TypeError("El sexo debe ser una string")
+        if not isinstance(empleado.dep,EDepartamento):
+            raise TypeError("El departamento está mal")
         
+        if tipo == 'asociado':
+            for i in empleado.asignaturas:
+                if not isinstance(i,Asignatura):
+                    raise TypeError("La Asignatura está mal")
+                    
+        elif tipo == 'investigador':
+            if not isinstance(empleado.area,str):
+                raise TypeError("El área debe ser una string")
+        else:
+            if not isinstance(empleado.area,str):
+                raise TypeError("El área debe ser una string")
+            for i in empleado.asignaturas:
+                if not isinstance(i,Asignatura):
+                    raise TypeError("La Asignatura está mal")
+            
+        for i in self.empleados:
+            if i.DNI == empleado.DNI:
+                raise TypeError("El DNI proporcionado ya se encuentra")
         self.empleados.append(empleado)
 
     def anadir_estudiante(self, estudiante):
-        atributos = estudiante.devuelve_datos()
-        if len(atributos) != 6:
-            raise TypeError('Debes proporcionar 6 atributos para Estudiante')
         
+        if not isinstance(estudiante.nombre,str):
+            raise TypeError("El nombre debe ser una string")
+        if not isinstance(estudiante.DNI,str):
+            raise TypeError("El DNI debe ser una string")
+        if not isinstance(estudiante.direccion,str):
+            raise TypeError("La dirección debe ser una string")
+        if not isinstance(estudiante.sexo,str):
+            raise TypeError("El sexo debe ser una string")
+        for i in estudiante.asignaturas:
+            if not isinstance(i,Asignatura):
+                raise TypeError("La Asignatura está mal")
+        for i in self.estudiantes:
+            if i.DNI == estudiante.DNI:
+                raise TypeError("El DNI proporcionado ya se encuentra")
         self.estudiantes.append(estudiante)
 
-    def eliminar_empleado(self, empleado):
-        self.empleados.remove(empleado)
+    def eliminar_empleado(self, DNI):
+        for i in self.empleados:
+            if i.DNI == DNI:
+                self.empleados.remove(i)
+                break
+            raise TypeError("No se encuentra el DNI en la BD")
+        
 
-    def eliminar_estudiante(self, estudiante):
-        self.estudiantes.remove(estudiante)
-
+    def eliminar_estudiante(self, DNI):
+        for i in self.estudiantes:
+            if i.DNI == DNI:
+                self.estudiantes.remove(i)
+                break
+            raise TypeError("No se encuentra el DNI en la BD")
+    
     def muestra_datos(self):
         print(f'Empleados: \n{[{i.nombre : i.DNI} for i in self.empleados]}')
         print(f'Estudiantes: \n{[{i.nombre : i.DNI} for i in self.estudiantes]}')
     
     def devuelve_datos(self):
         return[self.empleados, self.estudiantes]
+    
+    def cambia_dep(self,empleado,dep):
+        empleado.cambia_dep(dep)
+
+
+#TODO def mostrar_investigadores()
+
+#TODO def mostrar_profesores_titulares()
+
+#TODO def mostrar_profesores_asociados()
