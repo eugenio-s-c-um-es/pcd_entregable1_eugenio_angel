@@ -21,13 +21,13 @@ class EDepartamento(Enum):
     DITEC = 2
     DIS = 3
 
-class Miembro_Departamento(Persona,metaclass=ABCMeta):
-    def __init__(self, nombre, DNI, direccion, sexo,dep):
-        Persona.__init__(self,nombre, DNI, direccion, sexo)
-        self.dep = dep
+class Miembro_Departamento(Persona):
+    def __init__(self, nombre, DNI, direccion, sexo, dep):
+        super().__init__(nombre, DNI, direccion, sexo)
+        self.dep = EDepartamento(dep)
         
     def cambia_dep(self, dep):
-        self.dep = dep
+        self.dep = EDepartamento(dep)
     
     @abstractmethod
     def muestra_datos(self):
@@ -51,7 +51,11 @@ class Asignatura:
   
 class Estudiante(Persona):
     def __init__(self, nombre, DNI, direccion, sexo, asignaturas):
-        Persona.__init__(self,nombre, DNI, direccion, sexo)
+        if not all(isinstance(item, str) for item in [nombre, DNI, direccion, sexo]):
+            raise TypeError("El nombre, DNI, dirección y sexo deben ser strings")
+        if not all(isinstance(asignatura, Asignatura) for asignatura in asignaturas):
+            raise TypeError("Todas las asignaturas deben ser instancias de la clase Asignatura")
+        super().__init__(nombre, DNI, direccion, sexo)
         self.asignaturas = asignaturas
         
     def muestra_datos(self):
@@ -62,7 +66,9 @@ class Estudiante(Persona):
 
 class Investigador(Miembro_Departamento):
     def __init__(self,nombre,DNI,direccion,sexo,dep,area):
-        Miembro_Departamento.__init__(self,nombre,DNI,direccion,sexo,dep)
+        if not all(isinstance(item, str) for item in [nombre, DNI, direccion, sexo,area]):
+            raise TypeError("El nombre, DNI, dirección, sexo y área deben ser strings")
+        super().__init__(self,nombre,DNI,direccion,sexo,dep)
         self.area = area
         #self.asignaturas = None
         
@@ -98,72 +104,38 @@ class Universidad:
     def __init__(self,empleados,estudiantes):
         self.empleados = empleados
         self.estudiantes = estudiantes
-        
-    def anadir_empleado(self, empleado, tipo):
-        
-        if not isinstance(empleado.nombre,str):
-            raise TypeError("El nombre debe ser una string")
-        if not isinstance(empleado.DNI,str):
-            raise TypeError("El DNI debe ser una string")
-        if not isinstance(empleado.direccion,str):
-            raise TypeError("La dirección debe ser una string")
-        if not isinstance(empleado.sexo,str):
-            raise TypeError("El sexo debe ser una string")
-        if not isinstance(empleado.dep,EDepartamento):
-            raise TypeError("El departamento está mal")
-        
-        if tipo == 'asociado':
-            for i in empleado.asignaturas:
-                if not isinstance(i,Asignatura):
-                    raise TypeError("La Asignatura está mal")
-                    
-        elif tipo == 'investigador':
-            if not isinstance(empleado.area,str):
-                raise TypeError("El área debe ser una string")
+     
+
+    def dni_exists(self, dni, es_empleado):
+        if es_empleado:
+            return any(empleado.DNI == dni for empleado in self.empleados)
         else:
-            if not isinstance(empleado.area,str):
-                raise TypeError("El área debe ser una string")
-            for i in empleado.asignaturas:
-                if not isinstance(i,Asignatura):
-                    raise TypeError("La Asignatura está mal")
-            
-        for i in self.empleados:
-            if i.DNI == empleado.DNI:
-                raise TypeError("El DNI proporcionado ya se encuentra")
+            return any(estudiante.DNI == dni for estudiante in self.estudiantes)
+           
+    def anadir_empleado(self, empleado):
+        if self.dni_exists(empleado.DNI,1):
+            raise ValueError("El DNI proporcionado ya se encuentra")
         self.empleados.append(empleado)
 
+
     def anadir_estudiante(self, estudiante):
-        
-        if not isinstance(estudiante.nombre,str):
-            raise TypeError("El nombre debe ser una string")
-        if not isinstance(estudiante.DNI,str):
-            raise TypeError("El DNI debe ser una string")
-        if not isinstance(estudiante.direccion,str):
-            raise TypeError("La dirección debe ser una string")
-        if not isinstance(estudiante.sexo,str):
-            raise TypeError("El sexo debe ser una string")
-        for i in estudiante.asignaturas:
-            if not isinstance(i,Asignatura):
-                raise TypeError("La Asignatura está mal")
-        for i in self.estudiantes:
-            if i.DNI == estudiante.DNI:
-                raise TypeError("El DNI proporcionado ya se encuentra")
+        if self.dni_exists(estudiante.DNI,0):
+            raise ValueError("El DNI proporcionado ya se encuentra")
         self.estudiantes.append(estudiante)
 
     def eliminar_empleado(self, DNI):
         for i in self.empleados:
             if i.DNI == DNI:
                 self.empleados.remove(i)
-                break
-            raise TypeError("No se encuentra el DNI en la BD")
-        
+                return
+        raise ValueError("No se encuentra el DNI en la BD")
 
     def eliminar_estudiante(self, DNI):
         for i in self.estudiantes:
             if i.DNI == DNI:
                 self.estudiantes.remove(i)
-                break
-            raise TypeError("No se encuentra el DNI en la BD")
+                return
+        raise ValueError("No se encuentra el DNI en la BD")
     
     def muestra_datos(self):
         print(f'Empleados: \n{[{i.nombre : i.DNI} for i in self.empleados]}')
@@ -175,9 +147,16 @@ class Universidad:
     def cambia_dep(self,empleado,dep):
         empleado.cambia_dep(dep)
 
+    def mostrar_investigadores(self):
+        for empleado in self.empleados:
+            if isinstance(empleado, Investigador):
+                empleado.muestra_datos()
 
-#TODO def mostrar_investigadores()
-
-#TODO def mostrar_profesores_titulares()
-
-#TODO def mostrar_profesores_asociados()
+    def mostrar_profesores_titulares(self):
+        for empleado in self.empleados:
+            if isinstance(empleado, Profesor_titular):
+                empleado.muestra_datos()
+    def mostrar_profesores_asociados(self):
+        for empleado in self.empleados:
+            if isinstance(empleado, Profesor_asociado):
+                empleado.muestra_datos()
