@@ -38,17 +38,26 @@ class Miembro_Departamento(Persona):
         pass
       
 class Asignatura:
-    def __init__(self,nombre,id,creditos,horas):
-        self.nombre  = nombre
+    def __init__(self, nombre, id, creditos, horas):
+        if not all(isinstance(item, str) for item in [nombre, id]):
+            raise TypeError("El nombre y el ID deben ser strings")
+        if not isinstance(creditos, int):
+            raise TypeError("Los créditos deben ser un entero")
+        if not isinstance(horas, int):
+            raise TypeError("Las horas deben ser un entero")
+        
+        self.nombre = nombre
         self.id = id
         self.creditos = creditos
         self.horas = horas
         
     def muestra_datos(self):
-        print(f'Nombre:{self.nombre}, id: {self.id}, ETC: {self.creditos}, horas: {self.horas}')
+        print(f'Nombre: {self.nombre}, ID: {self.id}, Créditos: {self.creditos}, Horas: {self.horas}')
     
     def devuelve_datos(self):
-        return[self.nombre, self.id, self.creditos, self.horas]
+        return [self.nombre, self.id, self.creditos, self.horas]
+    
+    
   
 class Estudiante(Persona):
     def __init__(self, nombre, DNI, direccion, sexo, asignaturas):
@@ -106,14 +115,26 @@ class Profesor_titular(Investigador):
         return[self.nombre, self.DNI, self.direccion, self.sexo, self.dep, self.asignaturas, self.area]
 
 class Universidad:
-    def __init__(self,empleados,estudiantes):
+    def __init__(self,empleados,estudiantes,asginaturas):
         if not all(isinstance(empleado, Miembro_Departamento) for empleado in empleados):
             raise TypeError("Todos los empleados deben ser instancias de la clase Miembro_Departamento")
         if not all(isinstance(estudiante, Estudiante) for estudiante in estudiantes):
             raise TypeError("Todos los estudiantes deben ser instancias de la clase Estudiante")
         self.empleados = empleados
         self.estudiantes = estudiantes
-     
+        self.asignaturas = asginaturas
+        
+    def anadir_asignatura(self, asignatura):
+        if not isinstance(asignatura, Asignatura):
+            raise TypeError("La asignatura debe ser una instancia de la clase Asignatura")
+        self.asignaturas.append(asignatura)
+        
+    def eliminar_asignatura(self, id):
+        for asignatura in self.asignaturas:
+            if asignatura.id == id:
+                self.asignaturas.remove(asignatura)
+                return
+        raise ValueError("No se encuentra el ID en la BD")
 
     def dni_exists(self, dni, es_empleado):
         if es_empleado:
@@ -169,3 +190,84 @@ class Universidad:
         for empleado in self.empleados:
             if isinstance(empleado, Profesor_asociado):
                 empleado.muestra_datos()
+                
+    def mostrar_asignaturas(self):
+        asignaturas_ordenadas = sorted(self.asignaturas, key=lambda x: x.id)
+        for asignatura in asignaturas_ordenadas:
+            print(f'ID: {asignatura.id}, Nombre: {asignatura.nombre}')
+
+
+def menu():
+    u = Universidad([], [])  # inicializa la universidad con listas vacías de empleados y estudiantes
+
+    while True:
+        print("\nMenu:")
+        print("1. Añadir profesor titular")
+        print("2. Añadir profesor asociado")
+        print("3. Añadir estudiante")
+        print("4. Eliminar profesor titular")
+        print("5. Eliminar profesor asociado")
+        print("6. Eliminar estudiante")
+        print("7. Mostrar profesores titulares")
+        print("8. Mostrar profesores asociados")
+        print("9. Salir")
+
+        opcion = input("Elige una opción: ")
+
+        if opcion == '1':
+            # añadir profesor titular
+            nombre = input("Nombre: ")
+            DNI = input("DNI: ")
+            direccion = input("Dirección: ")
+            sexo = input("Sexo: ")
+            dep = input("Departamento (DIIC, DITEC, DIS): ")
+            area = input("Área de investigación: ")
+            asignaturas = []
+
+            while True:
+                opcion = input("¿Desea añadir una asignatura? (s/n): ")
+                if opcion.lower() == 's':
+                    u.mostrar_asignaturas()
+                    id_asignatura = input("ID de la asignatura: ")
+                    try:
+                        id_asignatura = int(id_asignatura)
+                    except ValueError:
+                        print("El ID de la asignatura debe ser un número entero.")
+                        continue
+                    asignaturas.append(id_asignatura)
+                elif opcion.lower() == 'n':
+                    break
+                else:
+                    print("Opción no válida. Por favor, elige 's' o 'n'.")
+
+            profesor_titular = Profesor_titular(nombre, DNI, direccion, sexo, dep, asignaturas, area)
+            u.anadir_empleado(profesor_titular)
+            print("Profesor titular añadido correctamente.")
+        
+        elif opcion == '2':
+            
+            # añadir profesor asociado
+            pass  # reemplaza con el código para añadir un profesor asociado
+        elif opcion == '3':
+            # añadir estudiante
+            pass  # reemplaza con el código para añadir un estudiante
+        elif opcion == '4':
+            # eliminar profesor titular
+            pass  # reemplaza con el código para eliminar un profesor titular
+        elif opcion == '5':
+            # eliminar profesor asociado
+            pass  # reemplaza con el código para eliminar un profesor asociado
+        elif opcion == '6':
+            # eliminar estudiante
+            pass  # reemplaza con el código para eliminar un estudiante
+        elif opcion == '7':
+            u.mostrar_profesores_titulares()
+        elif opcion == '8':
+            u.mostrar_profesores_asociados()
+        elif opcion == '9':
+            break  # salir del bucle
+        else:
+            print("Opción no válida. Por favor, elige una opción del 1 al 9.")
+
+if __name__ == "__main__":
+    menu()
