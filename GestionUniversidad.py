@@ -43,6 +43,7 @@ class Asignatura:
         self.id = id
         self.creditos = creditos
         self.horas = horas
+        
     def muestra_datos(self):
         print(f'Nombre:{self.nombre}, id: {self.id}, ETC: {self.creditos}, horas: {self.horas}')
     
@@ -81,6 +82,8 @@ class Investigador(Miembro_Departamento):
 class Profesor_asociado(Miembro_Departamento):
     def __init__(self, nombre, DNI, direccion, sexo, dep, asignaturas):
         Miembro_Departamento.__init__(self,nombre, DNI, direccion, sexo, dep)
+        if not all(isinstance(asignatura, Asignatura) for asignatura in asignaturas):
+            raise TypeError("Todas las asignaturas deben ser instancias de la clase Asignatura")
         self.asignaturas = asignaturas
         
     def muestra_datos(self):
@@ -92,6 +95,8 @@ class Profesor_asociado(Miembro_Departamento):
 class Profesor_titular(Investigador):
     def __init__(self, nombre, DNI, direccion, sexo, dep, asignaturas,area):
         Investigador.__init__(self, nombre, DNI, direccion, sexo, dep, area)
+        if not all(isinstance(asignatura, Asignatura) for asignatura in asignaturas):
+            raise TypeError("Todas las asignaturas deben ser instancias de la clase Asignatura")
         self.asignaturas = asignaturas
         
     def muestra_datos(self):
@@ -102,6 +107,10 @@ class Profesor_titular(Investigador):
 
 class Universidad:
     def __init__(self,empleados,estudiantes):
+        if not all(isinstance(empleado, Miembro_Departamento) for empleado in empleados):
+            raise TypeError("Todos los empleados deben ser instancias de la clase Miembro_Departamento")
+        if not all(isinstance(estudiante, Estudiante) for estudiante in estudiantes):
+            raise TypeError("Todos los estudiantes deben ser instancias de la clase Estudiante")
         self.empleados = empleados
         self.estudiantes = estudiantes
      
