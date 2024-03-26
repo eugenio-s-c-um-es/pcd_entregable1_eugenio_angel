@@ -198,15 +198,15 @@ class Universidad:
 
 
 def menu():
-    u = Universidad([], [])  # inicializa la universidad con listas vacías de empleados y estudiantes
+    u = Universidad([], [], [])  # inicializa la universidad con listas vacías de empleados y estudiantes y asignaturas
 
     while True:
         print("\nMenu:")
         print("1. Añadir profesor titular")
         print("2. Añadir profesor asociado")
-        print("3. Añadir estudiante")
-        print("4. Eliminar profesor titular")
-        print("5. Eliminar profesor asociado")
+        print("3. Añadir investigador")
+        print("4. Añadir estudiante")
+        print("5. Eliminar empleado")
         print("6. Eliminar estudiante")
         print("7. Mostrar profesores titulares")
         print("8. Mostrar profesores asociados")
@@ -245,21 +245,84 @@ def menu():
             print("Profesor titular añadido correctamente.")
         
         elif opcion == '2':
-            
             # añadir profesor asociado
-            pass  # reemplaza con el código para añadir un profesor asociado
+            nombre = input("Introduce el nombre del profesor asociado: ")
+            DNI = input("Introduce el DNI del profesor asociado: ")
+            direccion = input("Introduce la dirección del profesor asociado: ")
+            sexo = input("Introduce el sexo del profesor asociado (V/M): ")
+            dep = input("Introduce el departamento del profesor asociado (DIIC/DITEC/DIS): ")
+
+            asignaturas = []
+            while True:
+                print("¿Quieres añadir una asignatura al profesor asociado? (s/n)")
+                opcion = input()
+                if opcion.lower() == 's':
+                    id_asignatura = input("Introduce el ID de la asignatura: ")
+                    try:
+                        id_asignatura = int(id_asignatura)
+                    except ValueError:
+                        print("El ID de la asignatura debe ser un número entero.")
+                        continue
+                    asignaturas.append(id_asignatura)
+                elif opcion.lower() == 'n':
+                    break
+                else:
+                    print("Opción no válida. Por favor, elige 's' o 'n'.")
+
+            profesor_asociado = Profesor_asociado(nombre, DNI, direccion, sexo, dep, asignaturas)
+            u.anadir_empleado(profesor_asociado)
+            print("Profesor asociado añadido correctamente.")
+            
         elif opcion == '3':
-            # añadir estudiante
-            pass  # reemplaza con el código para añadir un estudiante
+            
+            nombre = input("Introduce el nombre del investigador: ")
+            DNI = input("Introduce el DNI del investigador: ")
+            direccion = input("Introduce la dirección del investigador: ")
+            sexo = input("Introduce el sexo del investigador (V/M): ")
+            dep = input("Introduce el departamento del investigador (DIIC/DITEC/DIS): ")
+            area = input("Introduce el área de investigación del investigador: ")
+
+            investigador = Investigador(nombre, DNI, direccion, sexo, dep, area)
+            u.anadir_empleado(investigador)
+            print("Investigador añadido correctamente.")
+            
+            
         elif opcion == '4':
-            # eliminar profesor titular
-            pass  # reemplaza con el código para eliminar un profesor titular
+            # añadir estudiante
+            nombre = input("Introduce el nombre del estudiante: ")
+            DNI = input("Introduce el DNI del estudiante: ")
+            direccion = input("Introduce la dirección del estudiante: ")
+            sexo = input("Introduce el sexo del estudiante (V/M): ")
+
+            asignaturas = []
+            while True:
+                print("¿Quieres añadir una asignatura al estudiante? (s/n)")
+                opcion = input()
+                if opcion.lower() == 's':
+                    id_asignatura = input("Introduce el ID de la asignatura: ")
+                    try:
+                        id_asignatura = int(id_asignatura)
+                    except ValueError:
+                        print("El ID de la asignatura debe ser un número entero.")
+                        continue
+                    asignaturas.append(id_asignatura)
+                elif opcion.lower() == 'n':
+                    break
+                else:
+                    print("Opción no válida. Por favor, elige 's' o 'n'.")
+
+            estudiante = Estudiante(nombre, DNI, direccion, sexo, asignaturas)
+            u.anadir_estudiante(estudiante)
+            print("Estudiante añadido correctamente.")
+            
         elif opcion == '5':
-            # eliminar profesor asociado
-            pass  # reemplaza con el código para eliminar un profesor asociado
+            DNI = input("Introduce el DNI del empleado a eliminar: ")
+            u.eliminar_empleado(DNI)
+            print("Empleado eliminado correctamente.")
         elif opcion == '6':
-            # eliminar estudiante
-            pass  # reemplaza con el código para eliminar un estudiante
+            DNI = input("Introduce el DNI del estudiante a eliminar: ")
+            u.eliminar_estudiante(DNI)
+            print("Estudiante eliminado correctamente.")
         elif opcion == '7':
             u.mostrar_profesores_titulares()
         elif opcion == '8':
