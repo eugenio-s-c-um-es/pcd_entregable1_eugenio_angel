@@ -69,47 +69,53 @@ class Estudiante(Persona):
         self.asignaturas = asignaturas
         
     def muestra_datos(self):
-        print(f'Nombre: {self.nombre} DNI: {self.DNI} Direccion: {self.direccion} Sexo: {self.sexo}')
+        print(f'Nombre: {self.nombre}, DNI: {self.DNI}, Direccion: {self.direccion}, Sexo: {self.sexo}')
         
     def devuelve_datos(self):
         return [self.nombre, self.DNI, self.direccion, self.sexo, self.asignaturas]
 
 class Investigador(Miembro_Departamento):
     def __init__(self,nombre,DNI,direccion,sexo,dep,area):
+        if dep not in EDepartamento.__members__:
+            raise ValueError("El departamento debe ser uno de los valores del enum EDepartamento")
+        Miembro_Departamento.__init__(self,nombre, DNI, direccion, sexo, EDepartamento[dep])
+        
         if not all(isinstance(item, str) for item in [nombre, DNI, direccion, sexo,area]):
             raise TypeError("El nombre, DNI, dirección, sexo y área deben ser strings")
-        super().__init__(self,nombre,DNI,direccion,sexo,dep)
         self.area = area
-        #self.asignaturas = None
         
     def muestra_datos(self):
-        print(f'Nombre: {self.nombre} DNI: {self.DNI} Direccion: {self.direccion} Sexo: {self.sexo} Departamento: {self.dep}')
+        print(f'Nombre: {self.nombre}, DNI: {self.DNI}, Direccion: {self.direccion}, Sexo: {self.sexo}, Departamento: {self.dep.name}')
     
     def devuelve_datos(self):
         return [self.nombre, self.DNI, self.direccion, self.sexo, self.dep, self.area]
     
 class Profesor_asociado(Miembro_Departamento):
     def __init__(self, nombre, DNI, direccion, sexo, dep, asignaturas):
-        Miembro_Departamento.__init__(self,nombre, DNI, direccion, sexo, dep)
+        if dep not in EDepartamento.__members__:
+            raise ValueError("El departamento debe ser uno de los valores del enum EDepartamento")
+        Miembro_Departamento.__init__(self,nombre, DNI, direccion, sexo, EDepartamento[dep])
         if not all(isinstance(asignatura, Asignatura) for asignatura in asignaturas):
             raise TypeError("Todas las asignaturas deben ser instancias de la clase Asignatura")
         self.asignaturas = asignaturas
         
     def muestra_datos(self):
-        print(f'Nombre: {self.nombre} DNI: {self.DNI} Direccion: {self.direccion} Sexo: {self.sexo} Departamento: {self.dep} Asignaturas: {self.asignaturas}')
+        print(f'Nombre: {self.nombre}, DNI: {self.DNI}, Direccion: {self.direccion}, Sexo: {self.sexo}, Departamento: {self.dep.name}, Asignaturas: {self.asignaturas}')
 
     def devuelve_datos(self):
         return[self.nombre, self.DNI, self.direccion, self.sexo, self.dep, self.asignaturas]
 
 class Profesor_titular(Investigador):
     def __init__(self, nombre, DNI, direccion, sexo, dep, asignaturas,area):
+        if dep not in EDepartamento.__members__:
+            raise ValueError("El departamento debe ser uno de los valores del enum EDepartamento")
         Investigador.__init__(self, nombre, DNI, direccion, sexo, dep, area)
         if not all(isinstance(asignatura, Asignatura) for asignatura in asignaturas):
             raise TypeError("Todas las asignaturas deben ser instancias de la clase Asignatura")
         self.asignaturas = asignaturas
         
     def muestra_datos(self):
-        print(f'Nombre: {self.nombre} DNI: {self.DNI} Direccion: {self.direccion} Sexo: {self.sexo} Departamento: {self.dep} Asignaturas: {self.asignaturas}')
+        print(f'Nombre: {self.nombre}, DNI: {self.DNI}, Direccion: {self.direccion}, Sexo: {self.sexo}, Departamento: {self.dep.name}, Asignaturas: {self.asignaturas}')
 
     def devuelve_datos(self):
         return[self.nombre, self.DNI, self.direccion, self.sexo, self.dep, self.asignaturas, self.area]
@@ -201,16 +207,16 @@ def menu():
     u = Universidad([], [], [])  # inicializa la universidad con listas vacías de empleados y estudiantes y asignaturas
 
     while True:
-        print("\nMenu:")
-        print("1. Añadir profesor titular")
-        print("2. Añadir profesor asociado")
-        print("3. Añadir investigador")
-        print("4. Añadir estudiante")
-        print("5. Eliminar empleado")
-        print("6. Eliminar estudiante")
-        print("7. Mostrar profesores titulares")
-        print("8. Mostrar profesores asociados")
-        print("9. Salir")
+        print("\nMenu:"
+              "\n1. Añadir profesor titular"
+              "\n2. Añadir profesor asociado"
+              "\n3. Añadir investigador"
+              "\n4. Añadir estudiante"
+              "\n5. Eliminar empleado"
+              "\n6. Eliminar estudiante"
+              "\n7. Mostrar profesores titulares"
+              "\n8. Mostrar profesores asociados"
+              "\n9. Salir")
 
         opcion = input("Elige una opción: ")
 
@@ -241,7 +247,7 @@ def menu():
                     print("Opción no válida. Por favor, elige 's' o 'n'.")
 
             profesor_titular = Profesor_titular(nombre, DNI, direccion, sexo, dep, asignaturas, area)
-            u.anadir_empleado(profesor_titular)
+            u.anadir_empleado(profesor_titular) 
             print("Profesor titular añadido correctamente.")
         
         elif opcion == '2':
