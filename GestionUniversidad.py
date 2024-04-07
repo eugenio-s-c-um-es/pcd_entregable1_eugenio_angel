@@ -1,17 +1,21 @@
 from enum import Enum
 from abc import ABCMeta, abstractmethod
 
+# Definición de la clase abstracta Persona
 class Persona(metaclass = ABCMeta):
     def __init__(self,nombre,DNI,direccion,sexo):
+        # Comprobación de los tipos de los argumentos
         if not all(isinstance(item, str) for item in [nombre, DNI, direccion]):
             raise TypeError("El nombre, DNI, dirección deben ser strings")
         if sexo not in ['V', 'M']:
             raise ValueError("El sexo debe ser 'V' o 'M'")
+        # Inicialización de los atributos
         self.nombre = nombre
         self.DNI = DNI
         self.direccion = direccion
         self.sexo = sexo
         
+    # Métodos abstractos que deben ser implementados por las subclases
     @abstractmethod
     def muestra_datos(self):
         pass
@@ -19,24 +23,31 @@ class Persona(metaclass = ABCMeta):
     @abstractmethod
     def devuelve_datos(self):
         pass
-        
+
+# Definición del enum EDepartamento
 class EDepartamento(Enum):
     DIIC = 1
     DITEC = 2
     DIS = 3
 
+# Definición de la clase abstracta Miembro_Departamento, que hereda de Persona
 class Miembro_Departamento(Persona):
     def __init__(self, nombre, DNI, direccion, sexo, dep):
+        # Comprobación del tipo del argumento dep
         if not isinstance(dep, EDepartamento):
             raise TypeError("El departamento debe ser una instancia de la clase EDepartamento")
+        # Llamada al constructor de la superclase
         super().__init__(nombre, DNI, direccion, sexo)
+        # Inicialización del atributo dep
         self.dep = dep
         
+    # Método para cambiar el departamento
     def cambia_dep(self, dep):
         if not isinstance(dep, EDepartamento):
             raise TypeError("El departamento debe ser una instancia de la clase EDepartamento")
         self.dep = dep
     
+    # Métodos abstractos que deben ser implementados por las subclases
     @abstractmethod
     def muestra_datos(self):
         pass
@@ -44,9 +55,11 @@ class Miembro_Departamento(Persona):
     @abstractmethod
     def devuelve_datos(self):
         pass
-      
+
+# Definición de la clase Asignatura
 class Asignatura:
     def __init__(self, nombre, id, creditos, horas):
+        # Comprobación de los tipos de los argumentos
         if not all(isinstance(item, str) for item in [nombre, id]):
             raise TypeError("El nombre y el ID deben ser strings")
         if not isinstance(creditos, int):
@@ -54,74 +67,99 @@ class Asignatura:
         if not isinstance(horas, int):
             raise TypeError("Las horas deben ser un entero")
         
+        # Inicialización de los atributos
         self.nombre = nombre
         self.id = id
         self.creditos = creditos
         self.horas = horas
         
+    # Método para mostrar los datos de la asignatura
     def muestra_datos(self):
         print(f'Nombre: {self.nombre}, ID: {self.id}, Créditos: {self.creditos}, Horas: {self.horas}')
     
+    # Método para devolver los datos de la asignatura
     def devuelve_datos(self):
         return [self.nombre, self.id, self.creditos, self.horas]
-    
-  
+
+# Definición de la clase Estudiante, que hereda de Persona
 class Estudiante(Persona):
     def __init__(self, nombre, DNI, direccion, sexo, asignaturas):
+        # Comprobación del tipo del argumento asignaturas
         if not all(isinstance(asignatura, Asignatura) for asignatura in asignaturas):
             raise TypeError("Todas las asignaturas deben ser instancias de la clase Asignatura")
+        # Llamada al constructor de la superclase
         super().__init__(nombre, DNI, direccion, sexo)
+        # Inicialización del atributo asignaturas
         self.asignaturas = asignaturas
         
+    # Método para mostrar los datos del estudiante
     def muestra_datos(self):
         print(f'Nombre: {self.nombre}, DNI: {self.DNI}, Direccion: {self.direccion}')
         
+    # Método para devolver los datos del estudiante
     def devuelve_datos(self):
         return [self.nombre, self.DNI, self.direccion, self.sexo, self.asignaturas]
 
+# Definición de la clase Investigador, que hereda de Miembro_Departamento
 class Investigador(Miembro_Departamento):
     def __init__(self,nombre,DNI,direccion,sexo,dep,area):
+        # Comprobación del tipo del argumento area
         if not isinstance(area, str):
             raise TypeError("El área debe ser un string")
+        # Llamada al constructor de la superclase
         Miembro_Departamento.__init__(self,nombre, DNI, direccion, sexo, dep)
+        # Inicialización del atributo area
         self.area = area
         
+    # Método para mostrar los datos del investigador
     def muestra_datos(self):
         print(f'Nombre: {self.nombre}, DNI: {self.DNI}, Direccion: {self.direccion}, Sexo: {self.sexo}, Departamento: {self.dep.name}')
     
+    # Método para devolver los datos del investigador
     def devuelve_datos(self):
         return [self.nombre, self.DNI, self.direccion, self.sexo, self.dep, self.area]
-    
+
+# Definición de la clase Profesor_asociado, que hereda de Miembro_Departamento
 class Profesor_asociado(Miembro_Departamento):
     def __init__(self, nombre, DNI, direccion, sexo, dep, asignaturas):
+        # Comprobación del tipo del argumento asignaturas
         if not all(isinstance(asignatura, Asignatura) for asignatura in asignaturas):
             raise TypeError("Todas las asignaturas deben ser instancias de la clase Asignatura")
         
+        # Llamada al constructor de la superclase
         Miembro_Departamento.__init__(self,nombre, DNI, direccion, sexo, dep)
     
+        # Inicialización del atributo asignaturas
         self.asignaturas = asignaturas
         
+    # Método para mostrar los datos del profesor asociado
     def muestra_datos(self):
         asignaturas = [asignatura.nombre for asignatura in self.asignaturas]
         print(f'Nombre: {self.nombre}, DNI: {self.DNI}, Departamento: {self.dep.name}, Asignaturas: {asignaturas}')
 
+    # Método para devolver los datos del profesor asociado
     def devuelve_datos(self):
         return[self.nombre, self.DNI, self.direccion, self.sexo, self.dep, self.asignaturas]
 
+# Definición de la clase Profesor_titular, que hereda de Investigador
 class Profesor_titular(Investigador):
     def __init__(self, nombre, DNI, direccion, sexo, dep, asignaturas, area):
+        # Comprobación del tipo del argumento asignaturas
         if not all(isinstance(asignatura, Asignatura) for asignatura in asignaturas):
             raise TypeError("Todas las asignaturas deben ser instancias de la clase Asignatura")
+        # Llamada al constructor de la superclase
         Investigador.__init__(self, nombre, DNI, direccion, sexo, dep, area)
+        # Inicialización del atributo asignaturas
         self.asignaturas = asignaturas
         
+    # Método para mostrar los datos del profesor titular
     def muestra_datos(self):
         asignaturas = [asignatura.nombre for asignatura in self.asignaturas]
         print(f'Nombre: {self.nombre}, DNI: {self.DNI}, Departamento: {self.dep.name}, Asignaturas: {asignaturas}, Área: {self.area}')
 
+    # Método para devolver los datos del profesor titular
     def devuelve_datos(self):
-        return[self.nombre, self.DNI, self.direccion, self.sexo, self.dep, self.asignaturas, self.area]
-
+        return [self.nombre, self.DNI, self.direccion, self.sexo, self.dep, self.asignaturas, self.area]
 class Universidad:
     def __init__(self,empleados,estudiantes,asginaturas):
         if not all(isinstance(empleado, Miembro_Departamento) for empleado in empleados):
