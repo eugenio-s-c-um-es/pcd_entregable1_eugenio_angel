@@ -11,7 +11,7 @@ class Persona(metaclass = ABCMeta):
         self.DNI = DNI
         self.direccion = direccion
         self.sexo = sexo
-    
+        
     @abstractmethod
     def muestra_datos(self):
         pass
@@ -153,11 +153,18 @@ class Universidad:
             return any(estudiante.DNI == dni for estudiante in self.estudiantes)
            
     def anadir_empleado(self, empleado):
+        if not isinstance(empleado, Investigador):
+            if not all(asignatura in self.asignaturas for asignatura in empleado.asignaturas):
+                raise ValueError("No se encuentran todas las asignaturas en la BD")
+                
         if self.dni_exists(empleado.DNI,1):
             raise ValueError("El DNI proporcionado ya se encuentra")
         self.empleados.append(empleado)
 
     def anadir_estudiante(self, estudiante):
+        if not all(asignatura in self.asignaturas for asignatura in estudiante.asignaturas):
+            raise ValueError("No se encuentran todas las asignaturas en la BD")
+        
         if self.dni_exists(estudiante.DNI,0):
             raise ValueError("El DNI proporcionado ya se encuentra")
         self.estudiantes.append(estudiante)

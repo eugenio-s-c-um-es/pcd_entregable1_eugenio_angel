@@ -5,7 +5,7 @@ def test_añadir_profesor_titular():
     u = Universidad([], [], [])
     asignatura1 = Asignatura('a', '123', 6, 36)
     asignatura2 = Asignatura('b', '456', 6, 42) 
-    asignaturas = [asignatura1, asignatura2]  # Add this line
+    asignaturas = [asignatura1, asignatura2]
     u.anadir_asignatura(asignatura1)
     u.anadir_asignatura(asignatura2)
     profesor_titular = Profesor_titular('nombre', '123456789A', 'direccion', 'V', EDepartamento.DIIC, asignaturas, 'area')
