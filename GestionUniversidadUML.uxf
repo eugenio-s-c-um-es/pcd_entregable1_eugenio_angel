@@ -67,6 +67,7 @@
 --
 -empleados: List of Miembro de Departamento
 -estudiantes : List of Estudiante
++asignaturas : List of Asignatura
 --
 +añadir_empleado()
 +añadir_estudiante():
