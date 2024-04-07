@@ -27,13 +27,15 @@ class EDepartamento(Enum):
 
 class Miembro_Departamento(Persona):
     def __init__(self, nombre, DNI, direccion, sexo, dep):
-        if dep not in EDepartamento.__members__:
-            raise ValueError("El departamento debe ser uno de los valores del enum EDepartamento")
+        if not isinstance(dep, EDepartamento):
+            raise TypeError("El departamento debe ser una instancia de la clase EDepartamento")
         super().__init__(nombre, DNI, direccion, sexo)
-        self.dep = EDepartamento[dep]
+        self.dep = dep
         
     def cambia_dep(self, dep):
-        self.dep = EDepartamento[dep]
+        if not isinstance(dep, EDepartamento):
+            raise TypeError("El departamento debe ser una instancia de la clase EDepartamento")
+        self.dep = dep
     
     @abstractmethod
     def muestra_datos(self):
@@ -63,7 +65,6 @@ class Asignatura:
     def devuelve_datos(self):
         return [self.nombre, self.id, self.creditos, self.horas]
     
-    
   
 class Estudiante(Persona):
     def __init__(self, nombre, DNI, direccion, sexo, asignaturas):
@@ -82,7 +83,7 @@ class Investigador(Miembro_Departamento):
     def __init__(self,nombre,DNI,direccion,sexo,dep,area):
         if not isinstance(area, str):
             raise TypeError("El área debe ser un string")
-        Miembro_Departamento.__init__(self,nombre, DNI, direccion, sexo, EDepartamento[dep])
+        Miembro_Departamento.__init__(self,nombre, DNI, direccion, sexo, dep)
         self.area = area
         
     def muestra_datos(self):
@@ -96,7 +97,7 @@ class Profesor_asociado(Miembro_Departamento):
         if not all(isinstance(asignatura, Asignatura) for asignatura in asignaturas):
             raise TypeError("Todas las asignaturas deben ser instancias de la clase Asignatura")
         
-        Miembro_Departamento.__init__(self,nombre, DNI, direccion, sexo, EDepartamento[dep])
+        Miembro_Departamento.__init__(self,nombre, DNI, direccion, sexo, dep)
     
         self.asignaturas = asignaturas
         
@@ -260,7 +261,7 @@ def menu():
                 else:
                     print("Opción no válida. Por favor, elige 's' o 'n'.")
 
-            profesor_titular = Profesor_titular(nombre, DNI, direccion, sexo, dep, asignaturas, area)
+            profesor_titular = Profesor_titular(nombre, DNI, direccion, sexo, EDepartamento[dep], asignaturas, area)
             u.anadir_empleado(profesor_titular) 
             print("Profesor titular añadido correctamente.")
         
@@ -293,7 +294,7 @@ def menu():
                 else:
                     print("Opción no válida. Por favor, elige 's' o 'n'.")
 
-            profesor_asociado = Profesor_asociado(nombre, DNI, direccion, sexo, dep, asignaturas)
+            profesor_asociado = Profesor_asociado(nombre, DNI, direccion, sexo, EDepartamento[dep], asignaturas)
             u.anadir_empleado(profesor_asociado)
             print("Profesor asociado añadido correctamente.")
             
@@ -306,7 +307,7 @@ def menu():
             dep = input("Introduce el departamento del investigador (DIIC/DITEC/DIS): ")
             area = input("Introduce el área de investigación del investigador: ")
 
-            investigador = Investigador(nombre, DNI, direccion, sexo, dep, area)
+            investigador = Investigador(nombre, DNI, direccion, sexo, EDepartamento[dep], area)
             u.anadir_empleado(investigador)
             print("Investigador añadido correctamente.")
             
