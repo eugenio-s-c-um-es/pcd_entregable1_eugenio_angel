@@ -10,10 +10,10 @@ class Persona(metaclass = ABCMeta):
         if sexo not in ['V', 'M']:
             raise ValueError("El sexo debe ser 'V' o 'M'")
         # Inicialización de los atributos
-        self.nombre = nombre
-        self.DNI = DNI
-        self.direccion = direccion
-        self.sexo = sexo
+        self._nombre = nombre
+        self._DNI = DNI
+        self._direccion = direccion
+        self._sexo = sexo
         
     # Métodos abstractos que deben ser implementados por las subclases
     @abstractmethod
@@ -39,13 +39,13 @@ class Miembro_Departamento(Persona):
         # Llamada al constructor de la superclase
         super().__init__(nombre, DNI, direccion, sexo)
         # Inicialización del atributo dep
-        self.dep = dep
+        self._dep = dep
         
     # Método para cambiar el departamento
     def cambia_dep(self, dep):
         if not isinstance(dep, EDepartamento):
             raise TypeError("El departamento debe ser una instancia de la clase EDepartamento")
-        self.dep = dep
+        self._dep = dep
     
     # Métodos abstractos que deben ser implementados por las subclases
     @abstractmethod
@@ -90,15 +90,15 @@ class Estudiante(Persona):
         # Llamada al constructor de la superclase
         super().__init__(nombre, DNI, direccion, sexo)
         # Inicialización del atributo asignaturas
-        self.asignaturas = asignaturas
+        self._asignaturas = asignaturas
         
     # Método para mostrar los datos del estudiante
     def muestra_datos(self):
-        print(f'Nombre: {self.nombre}, DNI: {self.DNI}, Direccion: {self.direccion}')
+        print(f'Nombre: {self._nombre}, DNI: {self._DNI}, Direccion: {self._direccion}')
         
     # Método para devolver los datos del estudiante
     def devuelve_datos(self):
-        return [self.nombre, self.DNI, self.direccion, self.sexo, self.asignaturas]
+        return [self._nombre, self._DNI, self._direccion, self._sexo, self._asignaturas]
 
 # Definición de la clase Investigador, que hereda de Miembro_Departamento
 class Investigador(Miembro_Departamento):
@@ -109,15 +109,15 @@ class Investigador(Miembro_Departamento):
         # Llamada al constructor de la superclase
         Miembro_Departamento.__init__(self,nombre, DNI, direccion, sexo, dep)
         # Inicialización del atributo area
-        self.area = area
+        self._area = area
         
     # Método para mostrar los datos del investigador
     def muestra_datos(self):
-        print(f'Nombre: {self.nombre}, DNI: {self.DNI}, Direccion: {self.direccion}, Sexo: {self.sexo}, Departamento: {self.dep.name}')
+        print(f'Nombre: {self._nombre}, DNI: {self._DNI}, Direccion: {self._direccion}, Sexo: {self._sexo}, Departamento: {self._dep.name}')
     
     # Método para devolver los datos del investigador
     def devuelve_datos(self):
-        return [self.nombre, self.DNI, self.direccion, self.sexo, self.dep, self.area]
+        return [self._nombre, self._DNI, self._direccion, self._sexo, self._dep, self._area]
 
 # Definición de la clase Profesor_asociado, que hereda de Miembro_Departamento
 class Profesor_asociado(Miembro_Departamento):
@@ -135,11 +135,11 @@ class Profesor_asociado(Miembro_Departamento):
     # Método para mostrar los datos del profesor asociado
     def muestra_datos(self):
         asignaturas = [asignatura.nombre for asignatura in self.asignaturas]
-        print(f'Nombre: {self.nombre}, DNI: {self.DNI}, Departamento: {self.dep.name}, Asignaturas: {asignaturas}')
+        print(f'Nombre: {self._nombre}, DNI: {self._DNI}, Departamento: {self._dep.name}, Asignaturas: {asignaturas}')
 
     # Método para devolver los datos del profesor asociado
     def devuelve_datos(self):
-        return[self.nombre, self.DNI, self.direccion, self.sexo, self.dep, self.asignaturas]
+        return[self._nombre, self._DNI, self._direccion, self._sexo, self._dep, self.asignaturas]
 
 # Definición de la clase Profesor_titular, que hereda de Investigador
 class Profesor_titular(Investigador):
@@ -155,103 +155,135 @@ class Profesor_titular(Investigador):
     # Método para mostrar los datos del profesor titular
     def muestra_datos(self):
         asignaturas = [asignatura.nombre for asignatura in self.asignaturas]
-        print(f'Nombre: {self.nombre}, DNI: {self.DNI}, Departamento: {self.dep.name}, Asignaturas: {asignaturas}, Área: {self.area}')
+        print(f'Nombre: {self._nombre}, DNI: {self._DNI}, Departamento: {self._dep.name}, Asignaturas: {asignaturas}, Área: {self._area}')
 
     # Método para devolver los datos del profesor titular
     def devuelve_datos(self):
-        return [self.nombre, self.DNI, self.direccion, self.sexo, self.dep, self.asignaturas, self.area]
+        return [self._nombre, self._DNI, self._direccion, self._sexo, self._dep, self.asignaturas, self._area]
 class Universidad:
+    # Constructor de la clase Universidad
     def __init__(self,empleados,estudiantes,asginaturas):
+        # Comprobamos que todos los empleados son instancias de la clase Miembro_Departamento
         if not all(isinstance(empleado, Miembro_Departamento) for empleado in empleados):
             raise TypeError("Todos los empleados deben ser instancias de la clase Miembro_Departamento")
+        # Comprobamos que todos los estudiantes son instancias de la clase Estudiante
         if not all(isinstance(estudiante, Estudiante) for estudiante in estudiantes):
             raise TypeError("Todos los estudiantes deben ser instancias de la clase Estudiante")
+        # Comprobamos que todas las asignaturas son instancias de la clase Asignatura
         if not all(isinstance(asignatura, Asignatura) for asignatura in asginaturas):
             raise TypeError("Todas las asignaturas deben ser instancias de la clase Asignatura")
-        self.empleados = empleados
-        self.estudiantes = estudiantes
+        # Inicializamos las listas de empleados, estudiantes y asignaturas
+        self._empleados = empleados
+        self._estudiantes = estudiantes
         self.asignaturas = asginaturas
         
+    # Método para añadir una asignatura a la lista de asignaturas
     def anadir_asignatura(self, asignatura):
+        # Comprobamos que la asignatura es una instancia de la clase Asignatura
         if not isinstance(asignatura, Asignatura):
             raise TypeError("La asignatura debe ser una instancia de la clase Asignatura")
+        # Añadimos la asignatura a la lista de asignaturas
         self.asignaturas.append(asignatura)
         
+    # Método para eliminar una asignatura de la lista de asignaturas
     def eliminar_asignatura(self, id):
+        # Recorremos la lista de asignaturas
         for asignatura in self.asignaturas:
+            # Si el id de la asignatura coincide con el id proporcionado, eliminamos la asignatura
             if asignatura.id == id:
                 self.asignaturas.remove(asignatura)
                 return
+        # Si no encontramos ninguna asignatura con el id proporcionado, lanzamos una excepción
         raise ValueError("No se encuentra el ID en la BD")
 
+    # Método para comprobar si un DNI ya existe en la lista de empleados o estudiantes
     def dni_exists(self, dni, es_empleado):
+        # Si es_empleado es True, comprobamos en la lista de empleados
         if es_empleado:
-            return any(empleado.DNI == dni for empleado in self.empleados)
+            return any(empleado._DNI == dni for empleado in self._empleados)
+        # Si es_empleado es False, comprobamos en la lista de estudiantes
         else:
-            return any(estudiante.DNI == dni for estudiante in self.estudiantes)
+            return any(estudiante._DNI == dni for estudiante in self._estudiantes)
            
     def anadir_empleado(self, empleado):
+        # Si el empleado no es un investigador, comprobamos que todas sus asignaturas están en la BD
         if not isinstance(empleado, Investigador):
             if not all(asignatura in self.asignaturas for asignatura in empleado.asignaturas):
                 raise ValueError("No se encuentran todas las asignaturas en la BD")
-                
-        if self.dni_exists(empleado.DNI,1):
+        # Comprobamos si el DNI del empleado ya existe en la BD
+        if self.dni_exists(empleado._DNI,1):
             raise ValueError("El DNI proporcionado ya se encuentra")
-        self.empleados.append(empleado)
+        # Añadimos el empleado a la lista de empleados
+        self._empleados.append(empleado)
 
     def anadir_estudiante(self, estudiante):
-        if not all(asignatura in self.asignaturas for asignatura in estudiante.asignaturas):
+        # Comprobamos que todas las asignaturas del estudiante están en la BD
+        if not all(asignatura in self.asignaturas for asignatura in estudiante._asignaturas):
             raise ValueError("No se encuentran todas las asignaturas en la BD")
-        
-        if self.dni_exists(estudiante.DNI,0):
+        # Comprobamos si el DNI del estudiante ya existe en la BD
+        if self.dni_exists(estudiante._DNI,0):
             raise ValueError("El DNI proporcionado ya se encuentra")
-        self.estudiantes.append(estudiante)
+        # Añadimos el estudiante a la lista de estudiantes
+        self._estudiantes.append(estudiante)
 
     def eliminar_empleado(self, DNI):
-        for i in self.empleados:
-            if i.DNI == DNI:
-                self.empleados.remove(i)
+        # Buscamos el empleado con el DNI proporcionado y lo eliminamos
+        for i in self._empleados:
+            if i._DNI == DNI:
+                self._empleados.remove(i)
                 return
+        # Si no encontramos el empleado, lanzamos una excepción
         raise ValueError("No se encuentra el DNI en la BD")
 
     def eliminar_estudiante(self, DNI):
-        for i in self.estudiantes:
-            if i.DNI == DNI:
-                self.estudiantes.remove(i)
+        # Buscamos el estudiante con el DNI proporcionado y lo eliminamos
+        for i in self._estudiantes:
+            if i._DNI == DNI:
+                self._estudiantes.remove(i)
                 return
+        # Si no encontramos el estudiante, lanzamos una excepción
         raise ValueError("No se encuentra el DNI en la BD")
-    
+
     def muestra_datos(self):
-        print(f'Empleados: \n{[{i.nombre : i.DNI} for i in self.empleados]}')
-        print(f'Estudiantes: \n{[{i.nombre : i.DNI} for i in self.estudiantes]}')
-    
+        # Imprimimos los nombres y DNIs de los empleados y estudiantes
+        print(f'Empleados: \n{[{i.nombre : i.DNI} for i in self._empleados]}')
+        print(f'Estudiantes: \n{[{i.nombre : i.DNI} for i in self._estudiantes]}')
+
     def devuelve_datos(self):
-        return[self.empleados, self.estudiantes]
-    
+        # Devolvemos las listas de empleados y estudiantes
+        return[self._empleados, self._estudiantes]
+
     def cambia_dep(self,empleado,dep):
+        # Cambiamos el departamento del empleado
         empleado.cambia_dep(dep)
 
     def mostrar_investigadores(self):
-        for empleado in self.empleados:
+        # Mostramos los datos de los empleados que son investigadores
+        for empleado in self._empleados:
             if isinstance(empleado, Investigador):
                 empleado.muestra_datos()
 
     def mostrar_profesores_titulares(self):
-        for empleado in self.empleados:
+        # Mostramos los datos de los empleados que son profesores titulares
+        for empleado in self._empleados:
             if isinstance(empleado, Profesor_titular):
                 empleado.muestra_datos()
+
     def mostrar_profesores_asociados(self):
-        for empleado in self.empleados:
+        # Mostramos los datos de los empleados que son profesores asociados
+        for empleado in self._empleados:
             if isinstance(empleado, Profesor_asociado):
                 empleado.muestra_datos()
-                
+
     def mostrar_asignaturas(self):
+        # Ordenamos las asignaturas por id y las mostramos
         asignaturas_ordenadas = sorted(self.asignaturas, key=lambda x: x.id)
         for asignatura in asignaturas_ordenadas:
             print(f'ID: {asignatura.id}, Nombre: {asignatura.nombre}')
-    
+
     def mostrar_estudiantes(self):
-        for estudiante in self.estudiantes:
+        # Mostramos los datos de los estudiantes
+        for estudiante in self._estudiantes:
             estudiante.muestra_datos()
 
 

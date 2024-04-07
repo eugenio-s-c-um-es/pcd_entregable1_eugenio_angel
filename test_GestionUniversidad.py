@@ -10,7 +10,7 @@ def test_añadir_profesor_titular():
     u.anadir_asignatura(asignatura2)
     profesor_titular = Profesor_titular('nombre', '123456789A', 'direccion', 'V', EDepartamento.DIIC, asignaturas, 'area')
     u.anadir_empleado(profesor_titular)
-    assert profesor_titular in u.empleados
+    assert profesor_titular in u._empleados
 
 def test_añadir_profesor_asociado():
     u = Universidad([], [], [])
@@ -21,7 +21,7 @@ def test_añadir_profesor_asociado():
     u.anadir_asignatura(asignatura2)
     profesor_asociado = Profesor_asociado('nombre', '123456789A', 'direccion', 'V', EDepartamento.DIIC,asignaturas)
     u.anadir_empleado(profesor_asociado)
-    assert profesor_asociado in u.empleados
+    assert profesor_asociado in u._empleados
 
 def test_añadir_estudiante():
     u = Universidad([], [], [])
@@ -32,7 +32,7 @@ def test_añadir_estudiante():
     u.anadir_asignatura(asignatura2)
     estudiante = Estudiante('nombre', '123456789A', 'direccion', 'V', asignaturas)
     u.anadir_estudiante(estudiante)
-    assert estudiante in u.estudiantes
+    assert estudiante in u._estudiantes
 
 def test_añadir_asignatura():
     u = Universidad([], [], [])
@@ -50,7 +50,7 @@ def test_eliminar_empleado():
     profesor_titular = Profesor_titular('nombre', '123456789A', 'direccion', 'V', EDepartamento.DIIC, asignaturas, 'area')
     u.anadir_empleado(profesor_titular)
     u.eliminar_empleado('123456789A')
-    assert profesor_titular not in u.empleados
+    assert profesor_titular not in u._empleados
 
 def test_eliminar_estudiante():
     u = Universidad([], [], [])
@@ -62,7 +62,7 @@ def test_eliminar_estudiante():
     estudiante = Estudiante('nombre', '123456789A', 'direccion', 'V', asignaturas)
     u.anadir_estudiante(estudiante)
     u.eliminar_estudiante('123456789A')
-    assert estudiante not in u.estudiantes
+    assert estudiante not in u._estudiantes
 
 def test_eliminar_asignatura():
     u = Universidad([], [], [])
@@ -79,7 +79,7 @@ def test_cambiar_departamento():
     profesor_titular = Profesor_titular('nombre', '123456789A', 'direccion', 'V', EDepartamento.DIIC, asignaturas, 'area')
     u.anadir_empleado(profesor_titular)
     u.cambia_dep(profesor_titular, EDepartamento.DITEC)
-    assert profesor_titular.dep == EDepartamento.DITEC
+    assert profesor_titular._dep == EDepartamento.DITEC
     
 if __name__ == '__main__':
     pytest.main()

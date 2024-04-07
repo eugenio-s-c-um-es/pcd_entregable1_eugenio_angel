@@ -24,7 +24,7 @@
     </coordinates>
     <panel_attributes>Miembro de Departamento
 --
-dep: EDepartamento
+-dep: EDepartamento
 --
 +cambia_dep()</panel_attributes>
     <additional_attributes/>
@@ -85,10 +85,10 @@ dep: EDepartamento
     </coordinates>
     <panel_attributes>Asignatura
 --
--nombre: str
--id: int
--créditos: int
--horas: int</panel_attributes>
++nombre: str
++id: int
++créditos: int
++horas: int</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -126,7 +126,7 @@ DIS</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>448</x>
-      <y>552</y>
+      <y>592</y>
       <w>168</w>
       <h>56</h>
     </coordinates>
@@ -151,10 +151,12 @@ DIS</panel_attributes>
     <coordinates>
       <x>520</x>
       <y>256</y>
-      <w>24</w>
+      <w>40</w>
       <h>144</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=0..*
+m2=1..*</panel_attributes>
     <additional_attributes>10.0;160.0;10.0;10.0</additional_attributes>
   </element>
   <element>
@@ -162,11 +164,13 @@ DIS</panel_attributes>
     <coordinates>
       <x>520</x>
       <y>496</y>
-      <w>24</w>
-      <h>72</h>
+      <w>40</w>
+      <h>112</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=0..*
+m2=1..*</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;120.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
@@ -196,10 +200,10 @@ DIS</panel_attributes>
       <x>240</x>
       <y>448</y>
       <w>224</w>
-      <h>152</h>
+      <h>192</h>
     </coordinates>
     <panel_attributes>lt=-&gt;</panel_attributes>
-    <additional_attributes>260.0;170.0;10.0;10.0</additional_attributes>
+    <additional_attributes>260.0;220.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
@@ -229,31 +233,50 @@ DIS</panel_attributes>
       <x>608</x>
       <y>520</y>
       <w>400</w>
-      <h>80</h>
+      <h>120</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;80.0;480.0;10.0</additional_attributes>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1..*
+m2=0..*</panel_attributes>
+    <additional_attributes>10.0;130.0;480.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>776</x>
-      <y>312</y>
-      <w>232</w>
-      <h>200</h>
+      <x>856</x>
+      <y>288</y>
+      <w>160</w>
+      <h>224</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;270.0;230.0</additional_attributes>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1..*
+m2=0..*</panel_attributes>
+    <additional_attributes>10.0;10.0;170.0;260.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>1072</x>
       <y>128</y>
-      <w>24</w>
+      <w>40</w>
       <h>360</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1..*
+m2=0..*</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;430.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>680</x>
+      <y>440</y>
+      <w>328</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=0..*
+m2=1..*</panel_attributes>
+    <additional_attributes>10.0;10.0;390.0;90.0</additional_attributes>
   </element>
 </diagram>
